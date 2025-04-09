@@ -1,23 +1,24 @@
 <template>
   <div class="container mx-auto px-4 py-8">
-    <h1 class="text-4xl font-bold text-center mb-8 neon-text">
-      正多角形を作図する
-    </h1>
-    
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold neon-text mb-2">Archimedes Lab.</h1>
+      <p class="text-white/70">正多角形を作図する</p>
+    </div>
+
     <div class="max-w-4xl mx-auto space-y-8">
       <!-- 描画エリア -->
       <div class="glass-panel p-6 aspect-square">
-        <svg
-          viewBox="-100 -100 200 200"
-          class="w-full h-full"
-        >
+        <svg viewBox="-100 -100 200 200" class="w-full h-full">
           <!-- 多角形 -->
           <polygon
             :points="polygonPoints"
             :stroke="strokeColor"
             :fill="fillColor"
             :stroke-width="strokeWidth"
-            :class="['transition-all duration-300', {'animate-spin-slow': autoRotate}]"
+            :class="[
+              'transition-all duration-300',
+              { 'animate-spin-slow': autoRotate },
+            ]"
           />
 
           <!-- 外接円 -->
@@ -31,7 +32,7 @@
             stroke-dasharray="4 4"
             class="transition-all duration-300"
           />
-          
+
           <!-- 内接円 -->
           <circle
             :r="innerRadius"
@@ -43,7 +44,7 @@
             stroke-dasharray="4 4"
             class="transition-all duration-300"
           />
-          
+
           <!-- 放射状の補助線 -->
           <line
             v-for="point in vertexPoints"
@@ -57,7 +58,7 @@
             :stroke-width="guidelineWidth"
             class="transition-all duration-300"
           />
-          
+
           <!-- 頂点マーカー -->
           <circle
             v-for="point in vertexPoints"
@@ -68,7 +69,7 @@
             :fill="strokeColor"
             class="transition-all duration-300"
           />
-          
+
           <!-- 中心点 -->
           <circle
             cx="0"
@@ -183,10 +184,12 @@
           </div>
 
           <!-- 回転アニメーション -->
-          <div class="col-span-2 md:col-span-4 flex items-center justify-center mt-4">
+          <div
+            class="col-span-2 md:col-span-4 flex items-center justify-center mt-4"
+          >
             <label class="text-sm mr-4">回転アニメーション</label>
             <label class="toggle-switch">
-              <input type="checkbox" v-model="autoRotate">
+              <input type="checkbox" v-model="autoRotate" />
               <span class="toggle-slider"></span>
             </label>
           </div>
@@ -197,65 +200,65 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed } from "vue";
 
-const vertices = ref(5)
-const strokeWidth = ref(1)
-const strokeColor = ref('#00fff7')
-const fillColor = ref('#0a0a1f')
-const autoRotate = ref(false)
-const vertexSize = ref(2)
-const guidelineWidth = ref(1)
+const vertices = ref(5);
+const strokeWidth = ref(1);
+const strokeColor = ref("#00fff7");
+const fillColor = ref("#0a0a1f");
+const autoRotate = ref(false);
+const vertexSize = ref(2);
+const guidelineWidth = ref(1);
 
 // カラープリセット
 const colorPresets = [
-  { name: 'サイバーパンク', stroke: '#00fff7', fill: '#0a0a1f' },
-  { name: 'レトロウェーブ', stroke: '#ff00ff', fill: '#120b1e' },
-  { name: 'マトリックス', stroke: '#00ff00', fill: '#0f0f0f' },
-  { name: 'クラシック', stroke: '#ffffff', fill: '#000000' }
-]
+  { name: "サイバーパンク", stroke: "#00fff7", fill: "#0a0a1f" },
+  { name: "レトロウェーブ", stroke: "#ff00ff", fill: "#120b1e" },
+  { name: "マトリックス", stroke: "#00ff00", fill: "#0f0f0f" },
+  { name: "クラシック", stroke: "#ffffff", fill: "#000000" },
+];
 
 const applyPreset = (preset) => {
-  strokeColor.value = preset.stroke
-  fillColor.value = preset.fill
-}
+  strokeColor.value = preset.stroke;
+  fillColor.value = preset.fill;
+};
 
 const validateVertices = (e) => {
   // 4文字以上は入力できないように制限
   if (e.target.value.length > 4) {
-    e.target.value = e.target.value.slice(0, 4)
-    vertices.value = parseInt(e.target.value)
+    e.target.value = e.target.value.slice(0, 4);
+    vertices.value = parseInt(e.target.value);
   }
   // 1000より大きい値は1000に制限
   if (parseInt(e.target.value) > 1000) {
-    vertices.value = 1000
+    vertices.value = 1000;
   }
-}
+};
 
 const vertexPoints = computed(() => {
-  const points = []
-  const count = parseInt(vertices.value) || 3
-  const radius = 90 // SVGビューポートに合わせる
+  const points = [];
+  const count = parseInt(vertices.value) || 3;
+  const radius = 90; // SVGビューポートに合わせる
 
   for (let i = 0; i < count; i++) {
-    const angle = (i * 2 * Math.PI) / count - Math.PI / 2
-    const x = radius * Math.cos(angle)
-    const y = radius * Math.sin(angle)
-    points.push({ x, y, angle })
+    const angle = (i * 2 * Math.PI) / count - Math.PI / 2;
+    const x = radius * Math.cos(angle);
+    const y = radius * Math.sin(angle);
+    points.push({ x, y, angle });
   }
 
-  return points
-})
+  return points;
+});
 
 const polygonPoints = computed(() => {
-  return vertexPoints.value.map(p => `${p.x},${p.y}`).join(' ')
-})
+  return vertexPoints.value.map((p) => `${p.x},${p.y}`).join(" ");
+});
 
 const innerRadius = computed(() => {
-  const count = parseInt(vertices.value) || 3
+  const count = parseInt(vertices.value) || 3;
   // 内接円の半径を計算（正多角形の性質より）
-  return 90 * Math.cos(Math.PI / count)
-})
+  return 90 * Math.cos(Math.PI / count);
+});
 </script>
 
 <style>
