@@ -1,6 +1,37 @@
 <template>
-  <div class="container mx-auto px-4 py-8">
-    <div class="text-center mb-8">
+    <div class="container mx-auto px-4 py-8">
+      <!-- Tips Button -->
+      <button 
+        @click="showTips = true"
+        class="fixed top-4 right-4 glass-panel px-3 py-2 flex items-center gap-2 hover:border-accent-neon transition-colors z-10"
+      >
+        <span class="text-lg">ℹ️</span>
+        <span class="text-sm">ヒント</span>
+      </button>
+
+      <!-- Tips Modal -->
+      <div v-if="showTips" class="fixed inset-0 bg-black/80 flex items-center justify-center z-20">
+        <div class="glass-panel max-w-lg mx-4 p-6 relative">
+          <button 
+            @click="showTips = false"
+            class="absolute top-2 right-2 text-white/50 hover:text-white"
+          >
+            ✕
+          </button>
+          <h2 class="text-xl font-bold mb-4 neon-text">🧠 Archimedes Lab.って？</h2>
+          <p class="text-white/80 leading-relaxed mb-4">
+            このアプリは、古代ギリシャの数学者「アルキメデス」の考え方にインスパイアされたものです。
+          </p>
+          <p class="text-white/80 leading-relaxed mb-4">
+            アルキメデスは、円に内接・外接する正多角形を使って、円周率（π）をとても正確に求めようとしました。
+          </p>
+          <p class="text-white/80 leading-relaxed">
+            このアプリでは、アルキメデスと同じように、多角形の辺の数を増やしていくことで、πに近づいていく様子を体験できます。
+          </p>
+        </div>
+      </div>
+
+      <div class="text-center mb-8">
       <h1 class="text-4xl font-bold neon-text mb-2">Archimedes Lab.</h1>
       <p class="text-white/70">正多角形を作図する</p>
     </div>
@@ -87,19 +118,31 @@
         <div class="glass-panel p-4 md:w-64 h-fit">
           <div class="grid grid-cols-1 gap-2 text-sm">
             <div class="flex justify-between items-center">
-              <span>周長（近似円周）</span>
+              <div class="flex items-center gap-1">
+                <span>周長（近似円周）</span>
+                <button class="help-icon" @click="showTooltip('perimeter')" title="正多角形のまわりの長さ。円の周の長さに近づいていくよ。">？</button>
+              </div>
               <span class="font-mono">{{ perimeter.toFixed(6) }}</span>
             </div>
             <div class="flex justify-between items-center">
-              <span>πの近似値</span>
+              <div class="flex items-center gap-1">
+                <span>πの近似値</span>
+                <button class="help-icon" @click="showTooltip('pi')" title="この図形から求められる、円周率（π）のだいたいの値だよ。">？</button>
+              </div>
               <span class="font-mono">{{ approximatedPi.toFixed(6) }}</span>
             </div>
             <div class="flex justify-between items-center">
-              <span>誤差</span>
+              <div class="flex items-center gap-1">
+                <span>誤差</span>
+                <button class="help-icon" @click="showTooltip('error')" title="この値が小さいほど、本当のπに近いということだよ。">？</button>
+              </div>
               <span class="font-mono">{{ piError }}</span>
             </div>
             <div class="flex justify-between items-center text-white/50 text-xs">
-              <span>実際のπ</span>
+              <div class="flex items-center gap-1">
+                <span>実際のπ</span>
+                <button class="help-icon" @click="showTooltip('realPi')" title="本当の円周率（π）の値だよ。">？</button>
+              </div>
               <span class="font-mono">{{ Math.PI.toFixed(6) }}</span>
             </div>
           </div>
@@ -227,6 +270,31 @@
 
 <script setup>
 import { ref, computed } from "vue";
+import { useToast } from 'vue-toastification'
+
+const toast = useToast()
+
+// ツールチップの説明テキスト
+const tooltipTexts = {
+  perimeter: "正多角形のまわりの長さ。円の周の長さに近づいていくよ。",
+  pi: "この図形から求められる、円周率（π）のだいたいの値だよ。",
+  error: "この値が小さいほど、本当のπに近いということだよ。",
+  realPi: "本当の円周率（π）の値だよ。"
+}
+
+// ツールチップを表示する関数
+const showTooltip = (key) => {
+  toast.info(tooltipTexts[key], {
+    position: "bottom-right",
+    timeout: 3000,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+  })
+}
+
+// Tipsモーダルの状態管理
+const showTips = ref(false)
 
 const vertices = ref(5);
 const strokeWidth = ref(1);
@@ -313,6 +381,26 @@ const piError = computed(() => {
 </script>
 
 <style>
+.help-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(0, 255, 247, 0.1);
+  border: 1px solid rgba(0, 255, 247, 0.3);
+  color: rgba(0, 255, 247, 0.8);
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.help-icon:hover {
+  background: rgba(0, 255, 247, 0.2);
+  border-color: rgba(0, 255, 247, 0.5);
+}
+
 input[type="color"] {
   -webkit-appearance: none;
   -moz-appearance: none;
