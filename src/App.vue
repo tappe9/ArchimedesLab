@@ -5,9 +5,11 @@
       <p class="text-white/70">正多角形を作図する</p>
     </div>
 
-    <div class="max-w-4xl mx-auto space-y-8">
-      <!-- 描画エリア -->
-      <div class="glass-panel p-6 aspect-square">
+    <div class="max-w-5xl mx-auto space-y-8">
+      <!-- 描画エリアとπ情報 -->
+      <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-start">
+        <!-- 描画エリア -->
+        <div class="glass-panel p-6 aspect-square">
         <svg viewBox="-100 -100 200 200" class="w-full h-full">
           <!-- 多角形 -->
           <polygon
@@ -79,6 +81,29 @@
             class="transition-all duration-300"
           />
         </svg>
+        </div>
+
+        <!-- π情報パネル -->
+        <div class="glass-panel p-4 md:w-64 h-fit">
+          <div class="grid grid-cols-1 gap-2 text-sm">
+            <div class="flex justify-between items-center">
+              <span>周長（近似円周）</span>
+              <span class="font-mono">{{ perimeter.toFixed(6) }}</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span>πの近似値</span>
+              <span class="font-mono">{{ approximatedPi.toFixed(6) }}</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span>誤差</span>
+              <span class="font-mono">{{ piError }}</span>
+            </div>
+            <div class="flex justify-between items-center text-white/50 text-xs">
+              <span>実際のπ</span>
+              <span class="font-mono">{{ Math.PI.toFixed(6) }}</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- コントロールパネル -->
@@ -195,6 +220,7 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </template>
@@ -258,6 +284,31 @@ const innerRadius = computed(() => {
   const count = parseInt(vertices.value) || 3;
   // 内接円の半径を計算（正多角形の性質より）
   return 90 * Math.cos(Math.PI / count);
+});
+
+// 正多角形の1辺の長さを計算（半径1の円に内接する正多角形）
+const sideLength = computed(() => {
+  const count = parseInt(vertices.value) || 3;
+  const angle = (2 * Math.PI) / count;
+  return 2 * Math.sin(angle / 2);
+});
+
+// 周長を計算
+const perimeter = computed(() => {
+  const count = parseInt(vertices.value) || 3;
+  return sideLength.value * count;
+});
+
+// πの近似値を計算
+const approximatedPi = computed(() => {
+  return perimeter.value;
+});
+
+// πとの誤差を計算
+const piError = computed(() => {
+  const error = Math.abs(Math.PI - approximatedPi.value);
+  const sign = approximatedPi.value > Math.PI ? '+' : '';
+  return `${sign}${error.toFixed(7)}`;
 });
 </script>
 
