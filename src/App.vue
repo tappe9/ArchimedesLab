@@ -119,9 +119,10 @@
           </svg>
         </div>
 
-        <!-- π情報パネル -->
+          <!-- π情報パネル -->
         <div class="glass-panel p-4 md:w-64 h-fit">
           <div class="grid grid-cols-1 gap-2 text-sm">
+            <div class="text-white/70 mb-1">半径 r = 1</div>
             <div class="flex justify-between items-center">
               <div class="flex items-center gap-1">
                 <span>周長（近似円周）</span>
