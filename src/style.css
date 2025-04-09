@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-bg-primary text-white min-h-screen;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-glass backdrop-blur-md rounded-xl border border-white/10;
+  }
+  
+  .neon-text {
+    @apply text-accent-neon drop-shadow-[0_0_2px_theme(colors.accent-neon)];
+  }
+  
+  .neon-border {
+    @apply border border-accent-neon shadow-neon;
+  }
+  
+  .input-field {
+    @apply bg-white/5 border border-white/10 rounded px-4 py-2 focus:outline-none focus:border-accent-neon;
+  }
+
+  .toggle-switch {
+    @apply relative inline-flex items-center cursor-pointer;
+  }
+
+  .toggle-switch input {
+    @apply sr-only;
+  }
+
+  .toggle-slider {
+    @apply w-11 h-6 bg-white/10 rounded-full transition-colors duration-200
+           after:content-[''] after:absolute after:h-5 after:w-5 after:rounded-full 
+           after:bg-white after:transition-transform after:duration-200 after:translate-x-0.5 after:top-0.5;
+  }
+
+  input:checked + .toggle-slider {
+    @apply bg-accent-neon;
+  }
+
+  input:checked + .toggle-slider:after {
+    @apply translate-x-5;
+  }
+}
+
+@layer utilities {
+  .animate-spin-slow {
+    animation: spin 20s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
