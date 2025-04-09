@@ -207,8 +207,9 @@
             <input
               type="range"
               v-model="strokeWidth"
-              min="1"
-              max="10"
+              min="0.1"
+              max="5"
+              step="0.1"
               class="w-full accent-accent-neon bg-white/5"
             />
             <div class="text-xs text-white/50 text-right">
@@ -333,7 +334,7 @@ const strokeColor = ref("#00fff7");
 const fillColor = ref("#0a0a1f");
 const autoRotate = ref(false);
 const vertexSize = ref(2);
-const guidelineWidth = ref(1);
+const guidelineWidth = ref(0.5);
 
 // カラープリセット
 const colorPresets = [
