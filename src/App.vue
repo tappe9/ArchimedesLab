@@ -1,66 +1,10 @@
 <template>
   <div class="container mx-auto px-4 py-8">
     <h1 class="text-4xl font-bold text-center mb-8 neon-text">
-      正<span class="text-accent-neon">{{ vertices }}</span>角形を作図する
+      正多角形を作図する
     </h1>
     
-    <div class="max-w-4xl mx-auto grid gap-8 md:grid-cols-[1fr_2fr]">
-      <!-- コントロールパネル -->
-      <div class="glass-panel p-6 space-y-6">
-        <div class="space-y-2">
-          <div class="flex justify-between items-center">
-            <label class="block text-sm">頂点数</label>
-            <span class="text-xs text-white/50">3～1000の整数</span>
-          </div>
-          <input
-            type="number"
-            v-model="vertices"
-            min="3"
-            max="1000"
-            maxlength="4"
-            @input="validateVertices"
-            class="input-field w-full"
-          />
-        </div>
-        
-        <div class="space-y-2">
-          <label class="block text-sm">線の太さ</label>
-          <input
-            type="range"
-            v-model="strokeWidth"
-            min="1"
-            max="10"
-            class="w-full accent-accent-neon bg-white/5"
-          />
-        </div>
-        
-        <div class="space-y-2">
-          <label class="block text-sm">線の色</label>
-          <input
-            type="color"
-            v-model="strokeColor"
-            class="w-full h-10 input-field"
-          />
-        </div>
-        
-        <div class="space-y-2">
-          <label class="block text-sm">塗りの色</label>
-          <input
-            type="color"
-            v-model="fillColor"
-            class="w-full h-10 input-field"
-          />
-        </div>
-
-        <div class="flex items-center justify-between">
-          <label class="text-sm">回転アニメーション</label>
-          <label class="toggle-switch">
-            <input type="checkbox" v-model="autoRotate">
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-      </div>
-      
+    <div class="max-w-4xl mx-auto space-y-8">
       <!-- 描画エリア -->
       <div class="glass-panel p-6 aspect-square">
         <svg
@@ -110,7 +54,7 @@
             :y2="point.y"
             :stroke="strokeColor"
             stroke-opacity="0.15"
-            stroke-dasharray="1 2"
+            :stroke-width="guidelineWidth"
             class="transition-all duration-300"
           />
           
@@ -120,7 +64,7 @@
             :key="point.angle"
             :cx="point.x"
             :cy="point.y"
-            r="2"
+            :r="vertexSize"
             :fill="strokeColor"
             class="transition-all duration-300"
           />
@@ -129,11 +73,124 @@
           <circle
             cx="0"
             cy="0"
-            r="2"
+            :r="vertexSize"
             :fill="strokeColor"
             class="transition-all duration-300"
           />
         </svg>
+      </div>
+
+      <!-- コントロールパネル -->
+      <div class="glass-panel p-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <!-- 頂点数 -->
+          <div class="space-y-2">
+            <div class="flex justify-between items-center">
+              <label class="block text-sm">頂点数</label>
+              <span class="text-xs text-white/50">3～1000</span>
+            </div>
+            <input
+              type="number"
+              v-model="vertices"
+              min="3"
+              max="1000"
+              maxlength="4"
+              @input="validateVertices"
+              class="input-field w-full"
+            />
+          </div>
+
+          <!-- 線の太さ -->
+          <div class="space-y-2">
+            <label class="block text-sm">線の太さ</label>
+            <input
+              type="range"
+              v-model="strokeWidth"
+              min="1"
+              max="10"
+              class="w-full accent-accent-neon bg-white/5"
+            />
+            <div class="text-xs text-white/50 text-right">
+              {{ strokeWidth }}px
+            </div>
+          </div>
+
+          <!-- 頂点の大きさ -->
+          <div class="space-y-2">
+            <label class="block text-sm">頂点の大きさ</label>
+            <input
+              type="range"
+              v-model="vertexSize"
+              min="1"
+              max="10"
+              class="w-full accent-accent-neon bg-white/5"
+            />
+            <div class="text-xs text-white/50 text-right">
+              {{ vertexSize }}px
+            </div>
+          </div>
+
+          <!-- 補助線の太さ -->
+          <div class="space-y-2">
+            <label class="block text-sm">補助線の太さ</label>
+            <input
+              type="range"
+              v-model="guidelineWidth"
+              min="0.1"
+              max="2"
+              step="0.1"
+              class="w-full accent-accent-neon bg-white/5"
+            />
+            <div class="text-xs text-white/50 text-right">
+              {{ guidelineWidth }}px
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6">
+          <!-- カラープリセット -->
+          <div class="space-y-2 col-span-2">
+            <label class="block text-sm">カラープリセット</label>
+            <div class="grid grid-cols-2 gap-2">
+              <button
+                v-for="preset in colorPresets"
+                :key="preset.name"
+                @click="applyPreset(preset)"
+                class="glass-panel p-2 text-sm hover:border-accent-neon transition-colors"
+              >
+                {{ preset.name }}
+              </button>
+            </div>
+          </div>
+
+          <!-- 色設定 -->
+          <div class="space-y-2">
+            <label class="block text-sm">線の色</label>
+            <input
+              type="color"
+              v-model="strokeColor"
+              class="w-full h-10 input-field"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm">塗りの色</label>
+            <input
+              type="color"
+              v-model="fillColor"
+              class="w-full h-10 input-field"
+            />
+          </div>
+
+          <!-- 回転アニメーション -->
+          <div class="col-span-2 md:col-span-4 flex items-center justify-center mt-4">
+            <label class="text-sm mr-4">回転アニメーション</label>
+            <label class="toggle-switch">
+              <input type="checkbox" v-model="autoRotate">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -143,6 +200,25 @@
 import { ref, computed } from 'vue'
 
 const vertices = ref(5)
+const strokeWidth = ref(1)
+const strokeColor = ref('#00fff7')
+const fillColor = ref('#0a0a1f')
+const autoRotate = ref(false)
+const vertexSize = ref(2)
+const guidelineWidth = ref(1)
+
+// カラープリセット
+const colorPresets = [
+  { name: 'サイバーパンク', stroke: '#00fff7', fill: '#0a0a1f' },
+  { name: 'レトロウェーブ', stroke: '#ff00ff', fill: '#120b1e' },
+  { name: 'マトリックス', stroke: '#00ff00', fill: '#0f0f0f' },
+  { name: 'クラシック', stroke: '#ffffff', fill: '#000000' }
+]
+
+const applyPreset = (preset) => {
+  strokeColor.value = preset.stroke
+  fillColor.value = preset.fill
+}
 
 const validateVertices = (e) => {
   // 4文字以上は入力できないように制限
@@ -155,10 +231,6 @@ const validateVertices = (e) => {
     vertices.value = 1000
   }
 }
-const strokeWidth = ref(1)
-const strokeColor = ref('#00fff7')
-const fillColor = ref('#0a0a1f')
-const autoRotate = ref(false)
 
 const vertexPoints = computed(() => {
   const points = []
