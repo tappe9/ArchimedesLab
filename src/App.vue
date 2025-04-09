@@ -297,6 +297,19 @@
         </div>
       </div>
     </div>
+
+    <!-- Footer -->
+    <div class="fixed bottom-4 w-full text-center text-white/50 text-sm">
+      © 2025 Created by
+      <a
+        href="https://github.com/tappe9"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-accent-neon hover:text-white transition-colors"
+      >
+        @tappe9
+      </a>
+    </div>
   </div>
 </template>
 
