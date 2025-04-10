@@ -296,6 +296,24 @@
           </div>
         </div>
       </div>
+
+      <!-- Aboutセクション -->
+      <section class="glass-panel mt-12 p-6 text-sm leading-relaxed text-white/80">
+        <h2 class="text-xl font-bold mb-2">About Archimedes Lab.</h2>
+        <p class="mb-4">
+          Archimedes Lab. は、古代ギリシャの数学者アルキメデスの知的探究をモチーフに生まれた、幾何学と美が融合するインタラクティブ・ラボです。
+        </p>
+        <p class="mb-4">
+          アルキメデス（紀元前287～紀元前212）は、円に内接・外接する正96角形を用いて、その周の長さを精密に計算し、円周率（π）が
+          223/71（約3.1408）と 22/7（約3.1429）の間にあることを導き出しました。これは、コンピュータのない時代における驚異的な精度です。
+        </p>
+        <p class="mb-4">
+          現代では、スーパーコンピュータによって π は 100兆桁以上まで算出されています。このアプリでは、古代と現代をつなぐ知の架け橋として、アルキメデスの手法を視覚的に体験できます。
+        </p>
+        <p class="text-white/50 text-xs">
+          ※ Archimedes Lab. は、数学の美しさと、探究する楽しさを直感で味わうためのWebアプリです。
+        </p>
+      </section>
     </div>
 
     <!-- Footer -->
